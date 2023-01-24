@@ -1,10 +1,15 @@
 <?php
-if(isset($_GET['t']) && is_numeric($_GET['t'])) {
-    $refresh_time = $_GET['t'];
-} else {
-    $refresh_time = 180;
+// Set the default refresh rate to 5 minutes
+$refresh_rate = 300;
+
+// Check if a "t" value is passed in the URL
+if (isset($_GET['t'])) {
+    // Convert the "t" value to minutes
+    $refresh_rate = $_GET['t'] * 60;
 }
-header("Refresh: {$refresh_time};");
+
+// Set the refresh header
+header("Refresh: $refresh_rate;");
 
 // Set the content type to image/jpeg
 header("Content-Type: image/jpeg");
