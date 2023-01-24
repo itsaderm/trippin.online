@@ -1,15 +1,14 @@
 import praw # library for interacting with the Reddit API
 import requests # library for sending HTTP requests
 import random # library for generating random numbers
-import concurrent.futures # library for running multiple threads in parallel
+from concurrent.futures import ProcessPoolExecutor # library for running multiple threads in parallel
 
 # create a Reddit object with client_id, client_secret, and user_agent
 reddit = praw.Reddit(
     client_id="", # Your client ID goes here
     client_secret="", # Your client secret goes here
-    user_agent="", # Your user agent goes here
+    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", # Your user agent goes here
 )
-
 # minimum number of upvotes for a post to be considered valid
 likeCount = 700
  
@@ -57,7 +56,9 @@ def scanReddit(name):
 # list of subreddit names to scan 
 subreddit_list = ["EarthPorn", "SpacePorn", "SkyPorn", "Art", "ExposurePorn"]
 
-# use ThreadPoolExecutor to run scanReddit function for each subreddit in parallel
-with concurrent.futures.ThreadPoolExecutor() as executor:
+# create an instance of the ProcessPoolExecutor with max_workers = 4
+with ProcessPoolExecutor(max_workers=4) as executor:
+    # for each subreddit in subreddit_list
     for subreddit in subreddit_list:
+        # submit the scanReddit function with the subreddit to the executor
         executor.submit(scanReddit, subreddit)
