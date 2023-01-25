@@ -23,10 +23,16 @@ if (!isset($_SESSION['images']) || !isset($_SESSION['index_expiration']) || $_SE
     // Store the index and expiration date in the session
     $_SESSION['images'] = $index;
     $_SESSION['index_expiration'] = time() + (60 * 60);
+    $_SESSION['displayed_images'] = array();
 }
 
 // Select a random image from the list stored in the session
 $random_image = array_rand($_SESSION['images']);
+
+while (in_array($random_image, $_SESSION['displayed_images'])) {
+    $random_image = array_rand($_SESSION['images']);
+}
+$_SESSION['displayed_images'][] = $random_image;
 
 if(file_exists($folder.$random_image)){
     // Get the image from folder
@@ -42,10 +48,11 @@ if(file_exists($folder.$random_image)){
 
     // Send the image to the client
     echo $image;
-
-    // Destroy the session
-    session_destroy();
-}else{
+}else {
     header("Refresh:0");
 }
-?>
+
+// Destroy the session if all images have been displayed
+if(count($_SESSION['images']) == count($_SESSION['displayed_images'])){
+    session_destroy();
+}
