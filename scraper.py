@@ -42,7 +42,7 @@ def scanReddit(name):
                                 f.write(titleauthor)
                                 # Download the image
                                 response = requests.get(direct_image_url)
-                                with open("images/" + submission.title + ".jpeg", "wb") as f:
+                                with open("images/" + submission.title + ".webp", "wb") as f:
                                     f.write(response.content)
                             else:
                                 print("Post data already exists.")
