@@ -5,25 +5,42 @@ $folder = "images/";
 session_start();
 
 // Check if the list of images is already stored in the session
-if (!isset($_SESSION['images'])) {
+if (!isset($_SESSION['images']) || !isset($_SESSION['index_expiration']) || $_SESSION['index_expiration'] < time()) {
     // Get a list of image files in the folder
-    $_SESSION['images'] = array_values(array_diff(scandir($folder), array('.', '..')));
+    $images = array_values(array_diff(scandir($folder), array('.', '..')));
+
+    // Create an index of the images
+    $index = array();
+    foreach ($images as $image) {
+        $index[$image] = sha1_file($folder . $image);
+    }
+
+    // Store the index and expiration date in the session
+    $_SESSION['images'] = $index;
+    $_SESSION['index_expiration'] = time() + (60 * 60);
 }
 
 // Select a random image from the list stored in the session
-$random_image = $_SESSION['images'][array_rand($_SESSION['images'])];
+$random_image = array_rand($_SESSION['images']);
 
 if(file_exists($folder.$random_image)){
     // Get the image from folder
     $image = file_get_contents($folder.$random_image);
+
+    // Disable caching of images
+    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");    
 
     // Set the content type to image/webp
     header("Content-Type: image/webp");
 
     // Send the image to the client
     echo $image;
+
+    // Destroy the session
+    session_destroy();
 }else{
     header("Refresh:0");
 }
-
 ?>
