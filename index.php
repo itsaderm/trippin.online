@@ -4,6 +4,11 @@ $folder = "images/";
 
 session_start();
 
+// Get the t variable from the URL for the amount of minutes to wait before refresh, if null use 5 minutes default
+$minutes = $_GET['t'] ?? 5;
+$seconds = $minutes * 60;
+header("Refresh: {$seconds}");
+
 // Check if the list of images is already stored in the session
 if (!isset($_SESSION['images']) || !isset($_SESSION['index_expiration']) || $_SESSION['index_expiration'] < time()) {
     // Get a list of image files in the folder
