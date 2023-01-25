@@ -1,40 +1,29 @@
 <?php
-// Set the default refresh rate to 5 minutes
-$refresh_rate = 300;
-
-// Check if a "t" value is passed in the URL
-if (isset($_GET['t'])) {
-    // Convert the "t" value to minutes
-    $refresh_rate = $_GET['t'] * 60;
-}
-
-// Set the refresh header
-header("Refresh: $refresh_rate;");
-
-// Set the content type to image/jpeg
-header("Content-Type: image/jpeg");
-
 // Define the folder where the images are stored
 $folder = "images/";
 
-// Get a list of image files in the folder
-$images = scandir($folder);
-
-// Create an array to store the images that have been displayed
 session_start();
-if(!isset($_SESSION['displayed_images'])){
-    $_SESSION['displayed_images'] = array();
+
+// Check if the list of images is already stored in the session
+if (!isset($_SESSION['images'])) {
+    // Get a list of image files in the folder
+    $_SESSION['images'] = array_values(array_diff(scandir($folder), array('.', '..')));
 }
 
-// Select a random image from the list
-do{
-    $i = rand(2, count($images)-1);
-    $image = $folder.$images[$i];
-}while(in_array($image, $_SESSION['displayed_images']));
+// Select a random image from the list stored in the session
+$random_image = $_SESSION['images'][array_rand($_SESSION['images'])];
 
-// Add the selected image to the array of displayed images
-$_SESSION['displayed_images'][] = $image;
+if(file_exists($folder.$random_image)){
+    // Get the image from folder
+    $image = file_get_contents($folder.$random_image);
 
-// Send the image to the client
-readfile($image);
+    // Set the content type to image/webp
+    header("Content-Type: image/webp");
+
+    // Send the image to the client
+    echo $image;
+}else{
+    header("Refresh:0");
+}
+
 ?>
