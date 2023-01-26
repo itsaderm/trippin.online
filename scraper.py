@@ -2,7 +2,9 @@ import os
 import praw # library for interacting with the Reddit API
 import requests # library for sending HTTP requests
 import random # library for generating random numbers
+import time # library for sleep
 from concurrent.futures import ProcessPoolExecutor # library for running multiple threads in parallel
+from concurrent.futures import as_completed
 import json # library for working with JSON data
 
 # Check if the posts.json file exists, if not create it
@@ -17,7 +19,10 @@ reddit = praw.Reddit(
     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", # Your user agent goes here
 )
 # minimum number of upvotes for a post to be considered valid
-likeCount = 700
+likeCount = 500
+
+# amount of images to download before sleeping 
+imageCount = 100
 
 # Create a dictionary to store post title & author name as key and direct_image_url as value
 data = {}
@@ -26,9 +31,9 @@ def scanReddit(name):
     """
     Scans subreddit for valid image posts.
     """
-    found_valid_post = False
-    print("Starting to search for valid post on r/", name)
-    while True:
+    print(f"Starting to search for valid post on r/{name}")
+    i = 0
+    while i < imageCount:
         # Get direct image URLs from subreddit
         subreddit = reddit.subreddit(name)
         submissions = subreddit.hot() # retrieve the 'hot' posts from the subreddit
@@ -38,8 +43,7 @@ def scanReddit(name):
             if submission.score > likeCount:
                 images = submission.preview.get("images")
                 if images:
-                    found_valid_post = True
-                    print("Image found with " + str(submission.score) + " upvotes.. Downloading: \n" + submission.title)
+                    print(f"\nImage found with {submission.score} upvotes.. Downloading:\nr/{subreddit} \n{submission.title}\n")
                     for image in images:
                         direct_image_url = image["source"]["url"]
                         # Create a string of the post title & author name.
@@ -56,23 +60,31 @@ def scanReddit(name):
                                 f.write(response.content)
                         else:
                             print("Post data already exists.")
+                        i = i+1
                 else:
                     print("Post is not an image post.")
             else:
-                print("Image found but " + str(submission.score) + "/700 upvotes needed.. Continuing search")
+                print(f"Image found but {submission.score}/{likeCount} upvotes needed.. Continuing search")
         else:
             print("Post is a text post.")
+        if i == 100:
+            print("100 images downloaded. Sleep for an hour.")
+            time.sleep(3600)
+            i = 0
+
+
 
 # list of subreddit names to scan 
 subreddit_list = ["EarthPorn", "SpacePorn", "SkyPorn", "Art", "ExposurePorn"]
 
-# create an instance of the ProcessPoolExecutor with max_workers = 4
 with ProcessPoolExecutor(max_workers=4) as executor:
-    # for each subreddit in subreddit_list
-    for subreddit in subreddit_list:
-        # submit the scanReddit function with the subreddit to the executor
-        executor.submit(scanReddit, subreddit)
-
-# the script will continue running indefinitely
-while True:
-    continue
+    # submit the scanReddit function with the subreddit to the executor
+    future_to_subreddit = {executor.submit(scanReddit, subreddit): subreddit for subreddit in subreddit_list}
+    for future in as_completed(future_to_subreddit):
+        subreddit = future_to_subreddit[future]
+        try:
+            data = future.result()
+        except Exception as exc:
+            print('%r generated an exception: %s' % (subreddit, exc))
+        else:
+            print('%r page is %d bytes' % (subreddit, len(data)))
