@@ -9,6 +9,9 @@ $minutes = $_GET['t'] ?? 5;
 $seconds = $minutes * 60;
 header("Refresh: {$seconds}");
 
+// set page tile
+header('Title: trippin.online');
+
 // Check if the list of images is already stored in the session
 if (!isset($_SESSION['images']) || !isset($_SESSION['index_expiration']) || $_SESSION['index_expiration'] < time()) {
     // Get a list of image files in the folder
