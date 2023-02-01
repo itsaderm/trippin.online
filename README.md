@@ -7,7 +7,7 @@ You can view the website live [here](https://trippin.online)
 
 # Script descriptions:
 - scraper.py:
-This is the main image scraper, this will go through the list of subreddits in the code and download images with more than 700 upvotes, it will then download the image and store it in the images folder.
+This is the main image scraper, this will go through the list of subreddits in the code and download images with more than 500 upvotes, it will then download the image and store it in the images folder.
 This script is currently running 24/7 so will always generate new images. The current subreddits are: EarthPorn, SpacePorn, SkyPorn, ExposurePorn and Art.
  
 - index.php:
