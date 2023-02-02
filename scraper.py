@@ -43,7 +43,7 @@ def scanReddit(name):
             if submission.score > likeCount:
                 images = submission.preview.get("images")
                 if images:
-                    print(f"\nImage found with {submission.score} upvotes.. Downloading:\nr/{subreddit} \n{submission.title}\n")
+                    print(f"\nImage found with {submission.score} upvotes")
                     for image in images:
                         direct_image_url = image["source"]["url"]
                         # Create a string of the post title & author name.
@@ -58,6 +58,7 @@ def scanReddit(name):
                             response = requests.get(direct_image_url)
                             with open("images/" + submission.title + ".webp", "wb") as f:
                                 f.write(response.content)
+                            print(f"r/{subreddit} - {submission.title} - Downloaded")
                         else:
                             print("Post data already exists.")
                         i = i+1
@@ -68,8 +69,8 @@ def scanReddit(name):
         else:
             print("Post is a text post.")
         if i == 100:
-            print("100 images downloaded. Sleep for an hour.")
-            time.sleep(3600)
+            print("100 images downloaded. Sleeping for 24 hours.")
+            time.sleep(86400)
             i = 0
 
 
