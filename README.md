@@ -12,7 +12,7 @@ This script is currently running 24/7 so will always generate new images. The cu
  
 - index.php:
 This is what the frontend uses, this will grab a random .jpeg from the images folder and show it to the user for 5 minutes unless the t variable is used in the url, in which case it will show for that amount of minutes before refreshing for a new image.
-There is cookie storage to store which images the user has already been shown so their is no duplicates.
+There is cookie storage to store which images the user has already been shown so there is no duplicates.
 
 # Contact
 For any enquiries related to this project please email contact (at) trippin (dot) online
