@@ -15,4 +15,4 @@ This is what the frontend uses, this will grab a random .jpeg from the images fo
 There is cookie storage to store which images the user has already been shown so there is no duplicates.
 
 # Contact
-For any enquiries related to this project please email contact (at) trippin (dot) online
+For any enquiries related to this project please message me on discord: `aderm.`
