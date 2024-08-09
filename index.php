@@ -1,3 +1,5 @@
+/* I fucking hate PHP, and I didn't even write the code */
+
 <?php
 // Define the folder where the images are stored
 $folder = "images/";
