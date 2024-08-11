@@ -61,11 +61,13 @@ The Python script scrapes images from Reddit, converts them to WebP format, and 
 
 1. **Setup `scraper.py`:**
    - Install required Python libraries using pip:
+   - 
      ```bash
      pip install praw requests pillow
      ```
    - Update the Reddit API credentials and the subreddit list as needed.
    - Run the script to start scraping and saving images:
+   - 
      ```bash
      python scraper.py
      ```
