@@ -1,13 +1,11 @@
-/* I fucking hate PHP, and I didn't even write the code */
-
 <?php
 // Define the folder where the images are stored
 $folder = "images/";
 
 session_start();
 
-// Get the `t` variable from the URL for the amount of minutes to wait before refresh, default to 5 minutes
-$minutes = $_GET['t'] ?? 5;
+// Get the `t` variable from the URL for the amount of minutes to wait before refresh, default to 3 minutes
+$minutes = $_GET['t'] ?? 3;
 $seconds = $minutes * 60;
 header("Refresh: {$seconds}");
 
